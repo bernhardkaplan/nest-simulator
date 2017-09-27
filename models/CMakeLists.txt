@@ -24,9 +24,11 @@ set( models_sources
     aeif_cond_alpha_multisynapse.h aeif_cond_alpha_multisynapse.cpp
     aeif_cond_beta_multisynapse.h aeif_cond_beta_multisynapse.cpp
     aeif_cond_exp.h aeif_cond_exp.cpp
+    aeif_cond_exp_multisynapse.h aeif_cond_exp_multisynapse.cpp
     aeif_psc_alpha.h aeif_psc_alpha.cpp
     aeif_psc_exp.h aeif_psc_exp.cpp
     amat2_psc_exp.h amat2_psc_exp.cpp
+    bcpnn_connection.h 
     bernoulli_connection.h
     binary_neuron.h
     cont_delay_connection.h cont_delay_connection_impl.h

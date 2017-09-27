@@ -48,9 +48,11 @@
 #include "aeif_cond_beta_multisynapse.h"
 #include "aeif_cond_alpha_RK5.h"
 #include "aeif_cond_exp.h"
+#include "aeif_cond_exp_multisynapse.h"
 #include "aeif_psc_alpha.h"
 #include "aeif_psc_exp.h"
 #include "amat2_psc_exp.h"
+#include "bcpnn_connection.h"
 #include "ginzburg_neuron.h"
 #include "hh_cond_exp_traub.h"
 #include "hh_psc_alpha.h"
@@ -372,6 +374,8 @@ ModelsModule::init( SLIInterpreter* )
     "aeif_cond_beta_multisynapse" );
   kernel().model_manager.register_node_model< aeif_cond_alpha_multisynapse >(
     "aeif_cond_alpha_multisynapse" );
+  kernel().model_manager.register_node_model< aeif_cond_exp_multisynapse >(
+    "aeif_cond_exp_multisynapse" );
   kernel().model_manager.register_node_model< siegert_neuron >(
     "siegert_neuron" );
 #endif
@@ -655,6 +659,15 @@ ModelsModule::init( SLIInterpreter* )
     .model_manager
     .register_connection_model< BernoulliConnection< TargetIdentifierPtrRport > >(
       "bernoulli_synapse" );
+
+  /* BeginDocumentation
+     Name: bcpnn_synapce - Plastic synapse implementing BCPNN with STP
+     SeeAlso: synapsedict, stdp_synapse, tsodyks_connection
+  */
+  kernel()
+    .model_manager
+    .register_connection_model< BCPNNConnection< TargetIdentifierPtrRport > >(
+      "bcpnn_synapse" );
 }
 
 } // namespace nest
