@@ -1,5 +1,5 @@
 /*
- *  nest::aeif_cond_exp_multisynapse.cpp
+ *  aeif_cond_exp_multisynapse.cpp
  *
  *  This file is part of NEST.
  *
@@ -327,7 +327,12 @@ void nest::aeif_cond_exp_multisynapse::Parameters_::set(const DictionaryDatum &d
       
   if ( AMPA_Tau_decay    <= 0 ||
        NMDA_Tau_decay    <= 0 ||
-       GABA_Tau_decay <= 0 )
+       GABA_Tau_decay <= 0    ||
+	   tau_j <= 0 ||
+	   tau_e <= 0 ||
+	   tau_p <= 0 ||
+	   tau_w <= 0
+	   )
     throw nest::BadProperty("All time constants must be strictly positive.");
 
   if ( gsl_error_tol <= 0. )
@@ -504,24 +509,27 @@ void nest::aeif_cond_exp_multisynapse::update(const nest::Time &origin, const lo
       if ( S_.r_ > 0 )
 	S_.y_[State_::V_M] = P_.V_reset_;
       else if ( S_.y_[State_::V_M] >= P_.V_peak_ )
-	{
-	  S_.y_[State_::V_M]  = P_.V_reset_;
-	  S_.y_[State_::W]   += P_.b; // spike-driven adaptation
-	  S_.r_               = V_.RefractoryCounts_;
-          S_.y_[State_::Z_J] += (1000.0/(P_.fmax*B_.step_) - S_.y_[State_::Z_J] + P_.epsilon) * B_.step_ / P_.tau_j;
-          S_.y_[State_::E_J] += (S_.y_[State_::Z_J] - S_.y_[State_::E_J]) * B_.step_ / P_.tau_e;
-          S_.y_[State_::P_J] += P_.kappa * (S_.y_[State_::E_J] - S_.y_[State_::P_J]) * B_.step_ / P_.tau_p;
-	  
-	  set_spiketime(nest::Time::step(origin.get_steps() + lag + 1));
-	  nest::SpikeEvent se;
-	  kernel().event_delivery_manager.send( *this, se, lag );
-	}
+		{
+		  S_.y_[State_::V_M]  = P_.V_reset_;
+		  S_.y_[State_::W]   += P_.b; // spike-driven adaptation
+		  S_.r_               = V_.RefractoryCounts_;
+			  S_.y_[State_::Z_J] += (1000.0/(P_.fmax*B_.step_) - S_.y_[State_::Z_J] + P_.epsilon) * B_.step_ / P_.tau_j;
+			  S_.y_[State_::E_J] += (S_.y_[State_::Z_J] - S_.y_[State_::E_J]) * B_.step_ / P_.tau_e;
+			  S_.y_[State_::P_J] += P_.kappa * (S_.y_[State_::E_J] - S_.y_[State_::P_J]) * B_.step_ / P_.tau_p;
+		  
+		  set_spiketime(nest::Time::step(origin.get_steps() + lag + 1));
+		  nest::SpikeEvent se;
+		  kernel().event_delivery_manager.send( *this, se, lag );
+//        std::cout << "spike at lag " << lag << " t: " << t << std::endl;
+		}
     }  
     S_.y_[State_::G_AMPA]    += B_.spikes_AMPA_.get_value(lag);
     S_.y_[State_::G_NMDA]    += B_.spikes_NMDA_.get_value(lag);
     S_.y_[State_::G_NMDA_NEG]    += B_.spikes_NMDA_NEG_.get_value(lag);
     S_.y_[State_::G_AMPA_NEG]    += B_.spikes_AMPA_NEG_.get_value(lag);
     S_.y_[State_::G_GABA]    += B_.spikes_GABA_.get_value(lag);
+//        std::cout << "Neuron detects a spike - event_delivery_manager finished, B._spikes_ OK " << 
+//            nest::Time::step(origin.get_steps() + lag + 1) << " t: " << std::endl;
 
     S_.bias = P_.gain * std::log(S_.y_[State_::P_J]);
     

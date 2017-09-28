@@ -398,7 +398,7 @@ namespace nest
 	// If we arrive here the receptor type is a spike receptor and either 1, 2 or 3 e.i.
 	// greater or equal to MIN_SPIKE_RECEPTOR = 1, and less than SUP_SPIKE_RECEPTOR
 	// = 4. Then 0, 1, or 2 is returned.
-	return receptor_type - MIN_SPIKE_RECEPTOR;
+	return receptor_type - MIN_SPIKE_RECEPTOR; 
   }
 
   inline

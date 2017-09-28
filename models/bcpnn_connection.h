@@ -1,7 +1,22 @@
 /*
  *  bcpnn_connection.h
  *
- *  Written by Philip Tully
+ *  This file is part of NEST.
+ *
+ *  Copyright (C) 2004 The NEST Initiative
+ *
+ *  NEST is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  NEST is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with NEST.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -96,6 +111,7 @@ namespace nest
 		port
 		handles_test_event( SpikeEvent&, rport )
 		{
+			std::cout << "ConnTestDummyNode handles_test_event " << std::endl;
 		  return invalid_port_;
 		}
 	  };
@@ -192,119 +208,127 @@ namespace nest
 	double t_lastspike, 
 	const nest::CommonSynapseProperties &)
   {
-    double t_spike = e.get_stamp().get_ms();  /* time stamp of current spike event */
-    double resolution = nest::Time::get_resolution().get_ms();
-    int spike_width = int (1. / resolution); 
-    double spike_height = 1000.0 / fmax_;     /* normalizing to match this spiking rule to abstract = 1000/FMAX (Hz)*/
-	Node* target = get_target( t );
-    double dendritic_delay = get_delay(); /* delay from dendrite -> soma */
+//    std::cout<< "DEBUG -1 " << std::endl;
+//    double t_spike = e.get_stamp().get_ms();  /* time stamp of current spike event */
+//    double resolution = nest::Time::get_resolution().get_ms();
+//    int spike_width = int (1. / resolution); 
+//    double spike_height = 1000.0 / fmax_;     /* normalizing to match this spiking rule to abstract = 1000/FMAX (Hz)*/
+//    Node* target = get_target( t );
+//    std::cout<< "DEBUG 0 " << std::endl;
+//    double dendritic_delay = get_delay(); /* delay from dendrite -> soma */
 
-    /*double h = e.get_stamp().get_ms() - t_lastspike;  
-    double f = std::exp(-h/tau_rec_);
-    double u_decay = (tau_fac_ < 1.0e-10) ? 0.0 : std::exp(-h/tau_fac_);*/
+//    /*double h = e.get_stamp().get_ms() - t_lastspike;  
+//    double f = std::exp(-h/tau_rec_);
+//    double u_decay = (tau_fac_ < 1.0e-10) ? 0.0 : std::exp(-h/tau_fac_);*/
 
-    /* get spike history in relevant range (t1, t2] from post-synaptic neuron */
-    std::deque<nest::histentry>::iterator start;
-    std::deque<nest::histentry>::iterator finish;
-	target->get_history(t_lastspike - dendritic_delay, t_spike - dendritic_delay,
-                      &start, &finish);
+//    /* get spike history in relevant range (t1, t2] from post-synaptic neuron */
+//    std::deque<nest::histentry>::iterator start;
+//    std::deque<nest::histentry>::iterator finish;
+//    target->get_history(t_lastspike - dendritic_delay, t_spike - dendritic_delay,
+//                      &start, &finish);
+//    std::cout<< "DEBUG 1 " << std::endl;
 
-    while (start != finish)  {/* loop until you get to last post spike */
-        post_spiketimes.push_back(start->t_);
-        start++;
-    }    
- 
-    int number_iterations = (int)((t_spike - t_lastspike)/resolution);
-    double K_vec_init = K_;
-    if (K_values_.size() > 1) {
-        K_vec_init = K_values_.front();
-    }
-    std::vector<double> K_vec (number_iterations, K_vec_init);
+//    while (start != finish)  {/* loop until you get to last post spike */
+//        post_spiketimes.push_back(start->t_);
+//        start++;
+//    }    
+//    std::cout<< "DEBUG 2 " << std::endl;
+// 
+//    int number_iterations = (int)((t_spike - t_lastspike)/resolution);
+//    double K_vec_init = K_;
+//    if (K_values_.size() > 1) {
+//        K_vec_init = K_values_.front();
+//    }
+//    std::vector<double> K_vec (number_iterations, K_vec_init);
 
-    if (K_values_.size() > 1) {
-        std::vector<double>::iterator K_it = K_values_.end();
-        std::vector<double>::iterator time_it = times_k_changed.end();
-        if (times_k_changed.back() >= t_lastspike){ 
-            K_it--; 
-            time_it--;
-            int idx_first = (int) ((t_spike - t_lastspike) / resolution);
-            int idx_second;
-            while (*time_it > t_lastspike){
-                idx_second = (int) ((*time_it - t_lastspike)/ resolution);
-                for (int i_k=idx_first-1; i_k >= idx_second; --i_k) {					
-                    K_vec.at(i_k) = *K_it;
-                } // for
-                idx_first = idx_second;
-                time_it--;
-                K_it--;
-            } // end of while
-        }
-        K_values_.clear();
-        K_values_.push_back(K_);
-        times_k_changed.clear();
-        times_k_changed.push_back(*time_it);
-    }
-    
-    /* Create a vector to represent the post spikes as a trace */
-    std::vector<double> post_active (number_iterations, 0.);
-    std::vector<double>::iterator post_it = post_spiketimes.begin(); 
+//    if (K_values_.size() > 1) {
+//        std::vector<double>::iterator K_it = K_values_.end();
+//        std::vector<double>::iterator time_it = times_k_changed.end();
+//        if (times_k_changed.back() >= t_lastspike){ 
+//            K_it--; 
+//            time_it--;
+//            int idx_first = (int) ((t_spike - t_lastspike) / resolution);
+//            int idx_second;
+//            while (*time_it > t_lastspike){
+//                idx_second = (int) ((*time_it - t_lastspike)/ resolution);
+//                for (int i_k=idx_first-1; i_k >= idx_second; --i_k) {					
+//                    K_vec.at(i_k) = *K_it;
+//                } // for
+//                idx_first = idx_second;
+//                time_it--;
+//                K_it--;
+//            } // end of while
+//        }
+//        K_values_.clear();
+//        K_values_.push_back(K_);
+//        times_k_changed.clear();
+//        times_k_changed.push_back(*time_it);
+//    }
+//    std::cout<< "DEBUG 3 nach K_vec" << std::endl;
+//    
+//    /* Create a vector to represent the post spikes as a trace */
+//    std::vector<double> post_active (number_iterations, 0.);
+//    std::vector<double>::iterator post_it = post_spiketimes.begin(); 
 
-    for (int timestep = 0; timestep < number_iterations; timestep++){
-        /* CASE: Default. Neither Pre nor Post spike. */
-        yi_ = 0.0; 
-        yj_ = 0.0;
+//    for (int timestep = 0; timestep < number_iterations; timestep++){
+//        /* CASE: Default. Neither Pre nor Post spike. */
+//        yi_ = 0.0; 
+//        yj_ = 0.0;
 
-        /* CASE: Pre without (*OR WITH post) spike - synchronous events handled automatically. */
-        if(timestep == 0 && t_lastspike != 0.) {
-            yi_ = spike_height * spike_width;
-        }
+//        /* CASE: Pre without (*OR WITH post) spike - synchronous events handled automatically. */
+//        if(timestep == 0 && t_lastspike != 0.) {
+//            yi_ = spike_height * spike_width;
+//        }
 
-        // if you have any post spike at all
-        if (post_spiketimes.size() > 0) { 
-            if (post_it != post_spiketimes.end()) { 
-                if (timestep == (int)((*post_it) - t_lastspike) / resolution){
-                    yj_ = spike_height * spike_width;
-                    post_it++;
-                }
-            }
-        }
+//        /* if you have any post spike at all */
+//        if (post_spiketimes.size() > 0) { 
+//            if (post_it != post_spiketimes.end()) { 
+//                if (timestep == (int)((*post_it) - t_lastspike) / resolution){
+//                    yj_ = spike_height * spike_width;
+//                    post_it++;
+//                }
+//            }
+//        }
 
-        /* Primary synaptic traces */
-        zi_ += (yi_ - zi_ + epsilon_ ) * resolution / taui_;
-        zj_ += (yj_ - zj_ + epsilon_ ) * resolution / tauj_;
+//        /* Primary synaptic traces */
+//        zi_ += (yi_ - zi_ + epsilon_ ) * resolution / taui_;
+//        zj_ += (yj_ - zj_ + epsilon_ ) * resolution / tauj_;
 
-        /* Secondary synaptic traces */
-        ei_  += (zi_ - ei_) * resolution / taue_;
-        ej_  += (zj_ - ej_) * resolution / taue_;
-        eij_ += (zi_ * zj_ - eij_) * resolution / taue_;
+//        /* Secondary synaptic traces */
+//        ei_  += (zi_ - ei_) * resolution / taue_;
+//        ej_  += (zj_ - ej_) * resolution / taue_;
+//        eij_ += (zi_ * zj_ - eij_) * resolution / taue_;
 
-        /* Tertiary synaptic traces */
-        pi_  += K_vec.at(timestep) * (ei_ - pi_) * resolution / taup_;
-        pj_  += K_vec.at(timestep) * (ej_ - pj_) * resolution / taup_;
-        pij_ += K_vec.at(timestep) * (eij_ - pij_) * resolution / taup_;
-    } /* of for */
+//        /* Tertiary synaptic traces */
+//        pi_  += K_vec.at(timestep) * (ei_ - pi_) * resolution / taup_;
+//        pj_  += K_vec.at(timestep) * (ej_ - pj_) * resolution / taup_;
+//        pij_ += K_vec.at(timestep) * (eij_ - pij_) * resolution / taup_;
+//    } /* of for */
+//    std::cout<< "DEBUG 4 traces " << std::endl;
 
-    bias_ = std::log(pj_);
-    
-    if (stp_flag_ > 0.5){
-        double_t h = e.get_stamp().get_ms() - t_lastspike;  
-        double_t x_decay = std::exp(-h/tau_rec_);
-        double_t u_decay = (tau_fac_ < 1.0e-10) ? 0.0 : std::exp(-h/tau_fac_);
-        x_= 1. + (x_ -x_*u_ -1.)*x_decay; // Eq. 5 from reference [3]
-        u_= U_+u_*(1.-U_)*u_decay; 
-        weight_ = x_ * u_ * gain_ * (std::log(pij_ / (pi_ * pj_)));
-    } else {
-        weight_ = gain_ * (std::log(pij_ / (pi_ * pj_)));
-    }
+//    bias_ = std::log(pj_);
+//    
+//    if (stp_flag_ > 0.5){
+//        double_t h = e.get_stamp().get_ms() - t_lastspike;  
+//        double_t x_decay = std::exp(-h/tau_rec_);
+//        double_t u_decay = (tau_fac_ < 1.0e-10) ? 0.0 : std::exp(-h/tau_fac_);
+//        x_= 1. + (x_ -x_*u_ -1.)*x_decay; // Eq. 5 from reference [3]
+//        u_= U_+u_*(1.-U_)*u_decay; 
+//        weight_ = x_ * u_ * gain_ * (std::log(pij_ / (pi_ * pj_)));
+//    } else {
+//        weight_ = gain_ * (std::log(pij_ / (pi_ * pj_)));
+//    }
+//    std::cout<< "DEBUG 5 STP" << std::endl;
 
-    /* Send the spike to the target */
-	e.set_receiver(*target);
-	e.set_weight(weight_);
-	e.set_delay(get_delay_steps());
-	e.set_rport(get_rport());
-	e();
+//    /* Send the spike to the target */
+//    e.set_receiver(*target);
+//    e.set_weight(weight_);
+//    e.set_delay(get_delay_steps());
+//    e.set_rport(get_rport());
+//    e();
+//    std::cout<< "DEBUG 6 weight update end of send" << std::endl;
 
-    post_spiketimes.clear();
+//    post_spiketimes.clear();
 
     } //of BCPNNConnection::send
 
@@ -336,6 +360,7 @@ namespace nest
 		tau_fac_(0.0),
 		weight_(1.0)
 	  { 
+		  std::cout << "BCPNNConnection constructed! " << std::endl;
 		times_k_changed.push_back(t_k_);
 		K_values_.push_back(K_);
 		set_initial_eps_eij_pij();
@@ -369,6 +394,7 @@ namespace nest
     tau_fac_(rhs.tau_fac_),
 	weight_(rhs.weight_)
   {
+		  std::cout << "BCPNNConnection copy constructor " << std::endl;
     times_k_changed.push_back(rhs.t_k_);
     K_values_.push_back(rhs.K_);
     set_initial_eps_eij_pij(); 
