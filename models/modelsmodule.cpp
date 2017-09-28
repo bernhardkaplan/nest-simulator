@@ -48,7 +48,7 @@
 #include "aeif_cond_beta_multisynapse.h"
 #include "aeif_cond_alpha_RK5.h"
 #include "aeif_cond_exp.h"
-#include "aeif_cond_exp_multisynapse.h"
+#include "aeif_cond_exp_bcpnn.h"
 #include "aeif_psc_alpha.h"
 #include "aeif_psc_exp.h"
 #include "amat2_psc_exp.h"
@@ -374,8 +374,8 @@ ModelsModule::init( SLIInterpreter* )
     "aeif_cond_beta_multisynapse" );
   kernel().model_manager.register_node_model< aeif_cond_alpha_multisynapse >(
     "aeif_cond_alpha_multisynapse" );
-  kernel().model_manager.register_node_model< aeif_cond_exp_multisynapse >(
-    "aeif_cond_exp_multisynapse" );
+  kernel().model_manager.register_node_model< aeif_cond_exp_bcpnn >(
+    "aeif_cond_exp_bcpnn" );
   kernel().model_manager.register_node_model< siegert_neuron >(
     "siegert_neuron" );
 #endif

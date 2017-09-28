@@ -111,7 +111,6 @@ namespace nest
 		port
 		handles_test_event( SpikeEvent&, rport )
 		{
-			std::cout << "ConnTestDummyNode handles_test_event " << std::endl;
 		  return invalid_port_;
 		}
 	  };
@@ -208,13 +207,11 @@ namespace nest
 	double t_lastspike, 
 	const nest::CommonSynapseProperties &)
   {
-	std::cout<< "DEBUG -1 " << std::endl;
 	double t_spike = e.get_stamp().get_ms();  /* time stamp of current spike event */
 	double resolution = nest::Time::get_resolution().get_ms();
 	int spike_width = int (1. / resolution); 
 	double spike_height = 1000.0 / fmax_;     /* normalizing to match this spiking rule to abstract = 1000/FMAX (Hz)*/
 	Node* target = get_target( t );
-	std::cout<< "DEBUG 0 " << std::endl;
 	double dendritic_delay = get_delay(); /* delay from dendrite -> soma */
 
 	/*double h = e.get_stamp().get_ms() - t_lastspike;  
@@ -226,13 +223,12 @@ namespace nest
 	std::deque<nest::histentry>::iterator finish;
 	target->get_history(t_lastspike - dendritic_delay, t_spike - dendritic_delay,
 					  &start, &finish);
-	std::cout<< "DEBUG 1 " << std::endl;
 
+	// Comment: why not use only start and finish? 
 	while (start != finish)  {/* loop until you get to last post spike */
 		post_spiketimes.push_back(start->t_);
 		start++;
 	}    
-	std::cout<< "DEBUG 2 " << std::endl;
  
 	int number_iterations = (int)((t_spike - t_lastspike)/resolution);
 	double K_vec_init = K_;
@@ -241,6 +237,7 @@ namespace nest
 	}
 	std::vector<double> K_vec (number_iterations, K_vec_init);
 
+	// build a vector of K values since the last spike happened
 	if (K_values_.size() > 1) {
 		std::vector<double>::iterator K_it = K_values_.end();
 		std::vector<double>::iterator time_it = times_k_changed.end();
@@ -260,11 +257,10 @@ namespace nest
 			} // end of while
 		}
 		K_values_.clear();
-		K_values_.push_back(K_);
+		K_values_.push_back(K_); // bug? 
 		times_k_changed.clear();
 		times_k_changed.push_back(*time_it);
 	}
-	std::cout<< "DEBUG 3 nach K_vec" << std::endl;
 	
 	/* Create a vector to represent the post spikes as a trace */
 	std::vector<double> post_active (number_iterations, 0.);
@@ -304,7 +300,6 @@ namespace nest
 		pj_  += K_vec.at(timestep) * (ej_ - pj_) * resolution / taup_;
 		pij_ += K_vec.at(timestep) * (eij_ - pij_) * resolution / taup_;
 	} /* of for */
-	std::cout<< "DEBUG 4 traces " << std::endl;
 
 	bias_ = std::log(pj_);
 	
@@ -318,7 +313,6 @@ namespace nest
 	} else {
 		weight_ = gain_ * (std::log(pij_ / (pi_ * pj_)));
 	}
-	std::cout<< "DEBUG 5 STP" << std::endl;
 
 	/* Send the spike to the target */
 	e.set_receiver(*target);
@@ -326,7 +320,6 @@ namespace nest
 	e.set_delay(get_delay_steps());
 	e.set_rport(get_rport());
 	e();
-	std::cout<< "DEBUG 6 weight update end of send" << std::endl;
 
 	post_spiketimes.clear();
 
@@ -360,7 +353,6 @@ namespace nest
 		tau_fac_(0.0),
 		weight_(1.0)
 	  { 
-		  std::cout << "BCPNNConnection constructed! " << std::endl;
 		times_k_changed.push_back(t_k_);
 		K_values_.push_back(K_);
 		set_initial_eps_eij_pij();
@@ -394,7 +386,6 @@ namespace nest
     tau_fac_(rhs.tau_fac_),
 	weight_(rhs.weight_)
   {
-		  std::cout << "BCPNNConnection copy constructor " << std::endl;
     times_k_changed.push_back(rhs.t_k_);
     K_values_.push_back(rhs.K_);
     set_initial_eps_eij_pij(); 

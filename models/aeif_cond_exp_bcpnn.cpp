@@ -1,5 +1,5 @@
 /*
- *  aeif_cond_exp_multisynapse.cpp
+ *  aeif_cond_exp_bcpnn.cpp
  *
  *  This file is part of NEST.
  *
@@ -20,7 +20,7 @@
  *
  */
 
-#include "aeif_cond_exp_multisynapse.h"
+#include "aeif_cond_exp_bcpnn.h"
 #include "nest_names.h"
 
 #ifdef HAVE_GSL
@@ -51,7 +51,7 @@
  * Recordables map
  * ---------------------------------------------------------------- */
 
-nest::RecordablesMap<nest::aeif_cond_exp_multisynapse> nest::aeif_cond_exp_multisynapse::recordablesMap_;
+nest::RecordablesMap<nest::aeif_cond_exp_bcpnn> nest::aeif_cond_exp_bcpnn::recordablesMap_;
 
 namespace nest
 {
@@ -62,39 +62,39 @@ namespace nest
    * for each quantity to be recorded.
    */
   template <>
-  void RecordablesMap<nest::aeif_cond_exp_multisynapse>::create()
+  void RecordablesMap<nest::aeif_cond_exp_bcpnn>::create()
   {
     // use standard names whereever you can for consistency!
-    insert_(nest::names::V_m, &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::V_M>);
-    insert_(Name("g_AMPA"), &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::G_AMPA>);
-    insert_(Name("g_NMDA"), &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::G_NMDA>);
-    insert_(Name("g_NMDA_NEG"), &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::G_NMDA_NEG>);
-    insert_(Name("g_AMPA_NEG"), &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::G_AMPA_NEG>);
-    insert_(Name("g_GABA"), &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::G_GABA>);
-    insert_(nest::names::w, &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::W>);
-    insert_(Name("z_j"),    &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::Z_J>);
-    insert_(Name("e_j"),    &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::E_J>);
-    insert_(Name("p_j"),    &nest::aeif_cond_exp_multisynapse::get_y_elem_<nest::aeif_cond_exp_multisynapse::State_::P_J>);
-    insert_(Name("bias"),   &nest::aeif_cond_exp_multisynapse::get_bias_);
-    insert_(Name("epsilon"),&nest::aeif_cond_exp_multisynapse::get_epsilon_);
-    insert_(Name("kappa"),  &nest::aeif_cond_exp_multisynapse::get_kappa_);
-    insert_(Name("I_AMPA"), &nest::aeif_cond_exp_multisynapse::get_I_AMPA_); 
-    insert_(Name("I_NMDA"), &nest::aeif_cond_exp_multisynapse::get_I_NMDA_); 
-    insert_(Name("I_AMPA_NEG"), &nest::aeif_cond_exp_multisynapse::get_I_AMPA_NEG_); 
-    insert_(Name("I_NMDA_NEG"), &nest::aeif_cond_exp_multisynapse::get_I_NMDA_NEG_); 
-    insert_(Name("I_GABA"), &nest::aeif_cond_exp_multisynapse::get_I_GABA_); 
+    insert_(nest::names::V_m, &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::V_M>);
+    insert_(Name("g_AMPA"), &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::G_AMPA>);
+    insert_(Name("g_NMDA"), &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::G_NMDA>);
+    insert_(Name("g_NMDA_NEG"), &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::G_NMDA_NEG>);
+    insert_(Name("g_AMPA_NEG"), &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::G_AMPA_NEG>);
+    insert_(Name("g_GABA"), &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::G_GABA>);
+    insert_(nest::names::w, &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::W>);
+    insert_(Name("z_j"),    &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::Z_J>);
+    insert_(Name("e_j"),    &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::E_J>);
+    insert_(Name("p_j"),    &nest::aeif_cond_exp_bcpnn::get_y_elem_<nest::aeif_cond_exp_bcpnn::State_::P_J>);
+    insert_(Name("bias"),   &nest::aeif_cond_exp_bcpnn::get_bias_);
+    insert_(Name("epsilon"),&nest::aeif_cond_exp_bcpnn::get_epsilon_);
+    insert_(Name("kappa"),  &nest::aeif_cond_exp_bcpnn::get_kappa_);
+    insert_(Name("I_AMPA"), &nest::aeif_cond_exp_bcpnn::get_I_AMPA_); 
+    insert_(Name("I_NMDA"), &nest::aeif_cond_exp_bcpnn::get_I_NMDA_); 
+    insert_(Name("I_AMPA_NEG"), &nest::aeif_cond_exp_bcpnn::get_I_AMPA_NEG_); 
+    insert_(Name("I_NMDA_NEG"), &nest::aeif_cond_exp_bcpnn::get_I_NMDA_NEG_); 
+    insert_(Name("I_GABA"), &nest::aeif_cond_exp_bcpnn::get_I_GABA_); 
   }
 }
 
 extern "C"
-int nest::aeif_cond_exp_multisynapse_dynamics (double, const double y[], double f[], void* pnode)
+int nest::aeif_cond_exp_bcpnn_dynamics (double, const double y[], double f[], void* pnode)
 {
   // a shorthand
-  typedef nest::aeif_cond_exp_multisynapse::State_ S;
+  typedef nest::aeif_cond_exp_bcpnn::State_ S;
 
   // get access to node so we can almost work as in a member function
   assert(pnode);
-  nest::aeif_cond_exp_multisynapse& node =  *(reinterpret_cast<nest::aeif_cond_exp_multisynapse*>(pnode));
+  nest::aeif_cond_exp_bcpnn& node =  *(reinterpret_cast<nest::aeif_cond_exp_bcpnn*>(pnode));
 
   // y[] here is---and must be---the state vector supplied by the integrator,
   // not the state vector in the node, node.S_.y[]. 
@@ -164,7 +164,7 @@ int nest::aeif_cond_exp_multisynapse_dynamics (double, const double y[], double 
  * Default constructors defining default parameters and state
  * ---------------------------------------------------------------- */
     
-nest::aeif_cond_exp_multisynapse::Parameters_::Parameters_()
+nest::aeif_cond_exp_bcpnn::Parameters_::Parameters_()
   : V_peak_    (   0.0 ), // mV 
     V_reset_   ( -60.0 ), // mV
     t_ref_     (   0.0 ), // ms
@@ -198,7 +198,7 @@ nest::aeif_cond_exp_multisynapse::Parameters_::Parameters_()
     recordablesMap_.create();
 }
 
-nest::aeif_cond_exp_multisynapse::State_::State_(const Parameters_ &p)
+nest::aeif_cond_exp_bcpnn::State_::State_(const Parameters_ &p)
   : I_AMPA_(0.0),
   I_AMPA_NEG_(0.0),
   I_NMDA_(0.0),
@@ -215,7 +215,7 @@ nest::aeif_cond_exp_multisynapse::State_::State_(const Parameters_ &p)
   y_[P_J] = 0.01;
 }
 
-nest::aeif_cond_exp_multisynapse::State_::State_(const State_ &s)
+nest::aeif_cond_exp_bcpnn::State_::State_(const State_ &s)
   : I_AMPA_(  s.I_AMPA_  ),
     I_AMPA_NEG_(  s.I_AMPA_NEG_  ),
     I_NMDA_(  s.I_NMDA_  ),
@@ -228,7 +228,7 @@ nest::aeif_cond_exp_multisynapse::State_::State_(const State_ &s)
     y_[i] = s.y_[i];
 }
 
-nest::aeif_cond_exp_multisynapse::State_& nest::aeif_cond_exp_multisynapse::State_::operator=(const State_ &s)
+nest::aeif_cond_exp_bcpnn::State_& nest::aeif_cond_exp_bcpnn::State_::operator=(const State_ &s)
 {
   assert(this != &s);  // would be bad logical error in program
   
@@ -248,7 +248,7 @@ nest::aeif_cond_exp_multisynapse::State_& nest::aeif_cond_exp_multisynapse::Stat
  * Paramater and state extractions and manipulation functions
  * ---------------------------------------------------------------- */
 
-void nest::aeif_cond_exp_multisynapse::Parameters_::get(DictionaryDatum &d) const
+void nest::aeif_cond_exp_bcpnn::Parameters_::get(DictionaryDatum &d) const
 {
   def<double>(d,nest::names::C_m,        C_m);
   def<double>(d,nest::names::V_th,       V_th);
@@ -281,7 +281,7 @@ void nest::aeif_cond_exp_multisynapse::Parameters_::get(DictionaryDatum &d) cons
   def<double>(d, "epsilon",      epsilon);
 }
 
-void nest::aeif_cond_exp_multisynapse::Parameters_::set(const DictionaryDatum &d)
+void nest::aeif_cond_exp_bcpnn::Parameters_::set(const DictionaryDatum &d)
 {
   updateValue<double>(d,nest::names::V_th,    V_th);
   updateValue<double>(d,nest::names::V_peak,  V_peak_);
@@ -339,21 +339,21 @@ void nest::aeif_cond_exp_multisynapse::Parameters_::set(const DictionaryDatum &d
     throw nest::BadProperty("The gsl_error_tol must be strictly positive.");
 }
 
-void nest::aeif_cond_exp_multisynapse::State_::get(DictionaryDatum &d) const
+void nest::aeif_cond_exp_bcpnn::State_::get(DictionaryDatum &d) const
 {
   def<double>(d,nest::names::V_m,  y_[V_M]);
   def<double>(d,nest::names::w,    y_[W]);
   def<double>(d,Name("p_j"), y_[P_J]);
 }
 
-void nest::aeif_cond_exp_multisynapse::State_::set(const DictionaryDatum &d, const Parameters_ &)
+void nest::aeif_cond_exp_bcpnn::State_::set(const DictionaryDatum &d, const Parameters_ &)
 {
   updateValue<double>(d,nest::names::V_m,  y_[V_M]);
   updateValue<double>(d,nest::names::w,    y_[W]);
   updateValue<double>(d,Name("p_j"), y_[P_J]);
 }
 
-nest::aeif_cond_exp_multisynapse::Buffers_::Buffers_(nest::aeif_cond_exp_multisynapse &n)
+nest::aeif_cond_exp_bcpnn::Buffers_::Buffers_(nest::aeif_cond_exp_bcpnn &n)
   : logger_(n),
     s_(0),
     c_(0),
@@ -363,7 +363,7 @@ nest::aeif_cond_exp_multisynapse::Buffers_::Buffers_(nest::aeif_cond_exp_multisy
   // init_buffers_().
 }
 
-nest::aeif_cond_exp_multisynapse::Buffers_::Buffers_(const Buffers_ &, nest::aeif_cond_exp_multisynapse &n)
+nest::aeif_cond_exp_bcpnn::Buffers_::Buffers_(const Buffers_ &, nest::aeif_cond_exp_bcpnn &n)
   : logger_(n),
     s_(0),
     c_(0),
@@ -377,7 +377,7 @@ nest::aeif_cond_exp_multisynapse::Buffers_::Buffers_(const Buffers_ &, nest::aei
  * Default and copy constructor for node, and destructor
  * ---------------------------------------------------------------- */
 
-nest::aeif_cond_exp_multisynapse::aeif_cond_exp_multisynapse()
+nest::aeif_cond_exp_bcpnn::aeif_cond_exp_bcpnn()
   : Archiving_Node(), 
     P_(), 
     S_(P_),
@@ -386,7 +386,7 @@ nest::aeif_cond_exp_multisynapse::aeif_cond_exp_multisynapse()
   recordablesMap_.create();
 }
 
-nest::aeif_cond_exp_multisynapse::aeif_cond_exp_multisynapse(const aeif_cond_exp_multisynapse &n)
+nest::aeif_cond_exp_bcpnn::aeif_cond_exp_bcpnn(const aeif_cond_exp_bcpnn &n)
   : Archiving_Node(n), 
     P_(n.P_), 
     S_(n.S_),
@@ -394,7 +394,7 @@ nest::aeif_cond_exp_multisynapse::aeif_cond_exp_multisynapse(const aeif_cond_exp
 {
 }
 
-nest::aeif_cond_exp_multisynapse::~aeif_cond_exp_multisynapse()
+nest::aeif_cond_exp_bcpnn::~aeif_cond_exp_bcpnn()
 {
   // GSL structs may not have been allocated, so we need to protect destruction
   if ( B_.s_ ) gsl_odeiv_step_free(B_.s_);
@@ -406,13 +406,13 @@ nest::aeif_cond_exp_multisynapse::~aeif_cond_exp_multisynapse()
  * Node initialization functions
  * ---------------------------------------------------------------- */
 
-void nest::aeif_cond_exp_multisynapse::init_state_(const Node &proto)
+void nest::aeif_cond_exp_bcpnn::init_state_(const Node &proto)
 {
-  const nest::aeif_cond_exp_multisynapse &pr = downcast<nest::aeif_cond_exp_multisynapse>(proto);
+  const nest::aeif_cond_exp_bcpnn &pr = downcast<nest::aeif_cond_exp_bcpnn>(proto);
   S_ = pr.S_;
 }
 
-void nest::aeif_cond_exp_multisynapse::init_buffers_()
+void nest::aeif_cond_exp_bcpnn::init_buffers_()
 {
   B_.spikes_AMPA_.clear();       // includes resize
   B_.spikes_NMDA_.clear();       // includes resize
@@ -446,14 +446,14 @@ void nest::aeif_cond_exp_multisynapse::init_buffers_()
   else 
     gsl_odeiv_evolve_reset(B_.e_);
   
-  B_.sys_.function  = nest::aeif_cond_exp_multisynapse_dynamics; 
+  B_.sys_.function  = nest::aeif_cond_exp_bcpnn_dynamics; 
   B_.sys_.jacobian  = NULL;
   B_.sys_.dimension = State_::STATE_VEC_SIZE;
   B_.sys_.params    = reinterpret_cast<void*>(this);
   B_.I_stim_ = 0.0;
 }
 
-void nest::aeif_cond_exp_multisynapse::calibrate()
+void nest::aeif_cond_exp_bcpnn::calibrate()
 {
   B_.logger_.init();  // ensures initialization in case mm connected after Simulate
   V_.RefractoryCounts_ = nest::Time(nest::Time::ms(P_.t_ref_)).get_steps();
@@ -464,7 +464,7 @@ void nest::aeif_cond_exp_multisynapse::calibrate()
  * Update and spike handling functions
  * ---------------------------------------------------------------- */
 
-void nest::aeif_cond_exp_multisynapse::update(const nest::Time &origin, const long from, const long to)
+void nest::aeif_cond_exp_bcpnn::update(const nest::Time &origin, const long from, const long to)
 {
   assert ( to >= 0 && (nest::delay) from < kernel().connection_manager.get_min_delay() );
   assert ( from < to );
@@ -487,6 +487,7 @@ void nest::aeif_cond_exp_multisynapse::update(const nest::Time &origin, const lo
     // note that (t+IntegrationStep > step) leads to integration over
     // (t, step] and afterwards setting t to step, but it does not
     // enforce setting IntegrationStep to step-t
+	z_j_old = S_.y_[State_::Z_J];
     while ( t < B_.step_ )
     {
       const int status = gsl_odeiv_evolve_apply(B_.e_, B_.c_, B_.s_, 
@@ -514,13 +515,13 @@ void nest::aeif_cond_exp_multisynapse::update(const nest::Time &origin, const lo
 		  S_.y_[State_::W]   += P_.b; // spike-driven adaptation
 		  S_.r_               = V_.RefractoryCounts_;
 			  S_.y_[State_::Z_J] += (1000.0/(P_.fmax*B_.step_) - S_.y_[State_::Z_J] + P_.epsilon) * B_.step_ / P_.tau_j;
+//              S_.y_[State_::Z_J] += (1000.0/(P_.fmax*B_.step_) - z_j_old + P_.epsilon) * B_.step_ / P_.tau_j;
 			  S_.y_[State_::E_J] += (S_.y_[State_::Z_J] - S_.y_[State_::E_J]) * B_.step_ / P_.tau_e;
 			  S_.y_[State_::P_J] += P_.kappa * (S_.y_[State_::E_J] - S_.y_[State_::P_J]) * B_.step_ / P_.tau_p;
 		  
 		  set_spiketime(nest::Time::step(origin.get_steps() + lag + 1));
 		  nest::SpikeEvent se;
 		  kernel().event_delivery_manager.send( *this, se, lag );
-//        std::cout << "spike at lag " << lag << " t: " << t << std::endl;
 		}
     }  
     S_.y_[State_::G_AMPA]    += B_.spikes_AMPA_.get_value(lag);
@@ -528,10 +529,7 @@ void nest::aeif_cond_exp_multisynapse::update(const nest::Time &origin, const lo
     S_.y_[State_::G_NMDA_NEG]    += B_.spikes_NMDA_NEG_.get_value(lag);
     S_.y_[State_::G_AMPA_NEG]    += B_.spikes_AMPA_NEG_.get_value(lag);
     S_.y_[State_::G_GABA]    += B_.spikes_GABA_.get_value(lag);
-//        std::cout << "Neuron detects a spike - event_delivery_manager finished, B._spikes_ OK " << 
-//            nest::Time::step(origin.get_steps() + lag + 1) << " t: " << std::endl;
-
-    S_.bias = P_.gain * std::log(S_.y_[State_::P_J]);
+	S_.bias = P_.gain * std::log(S_.y_[State_::P_J]);
     
     // set new input current
     B_.I_stim_ = B_.currents_.get_value(lag);
@@ -541,7 +539,7 @@ void nest::aeif_cond_exp_multisynapse::update(const nest::Time &origin, const lo
   }
 }
   
-void nest::aeif_cond_exp_multisynapse::handle(nest::SpikeEvent &e)
+void nest::aeif_cond_exp_bcpnn::handle(nest::SpikeEvent &e)
 {
   assert ( e.get_delay() > 0 );
   assert(0 <= e.get_rport() && e.get_rport() < SUP_SPIKE_RECEPTOR - MIN_SPIKE_RECEPTOR);
@@ -565,7 +563,7 @@ void nest::aeif_cond_exp_multisynapse::handle(nest::SpikeEvent &e)
            B_.spikes_GABA_.add_value(e.get_rel_delivery_steps(kernel().simulation_manager.get_slice_origin()), -e.get_weight() * e.get_multiplicity() );
 }
 
-void nest::aeif_cond_exp_multisynapse::handle(nest::CurrentEvent &e)
+void nest::aeif_cond_exp_bcpnn::handle(nest::CurrentEvent &e)
 {
   assert ( e.get_delay() > 0 );
 
@@ -578,9 +576,9 @@ void nest::aeif_cond_exp_multisynapse::handle(nest::CurrentEvent &e)
   assert(0 <= e.get_rport() && e.get_rport() < SUP_CURR_RECEPTOR - MIN_CURR_RECEPTOR);
 }
 
-void nest::aeif_cond_exp_multisynapse::handle(nest::DataLoggingRequest &e)
+void nest::aeif_cond_exp_bcpnn::handle(nest::DataLoggingRequest &e)
 {
   B_.logger_.handle(e);
 }
 
-#endif // HAVE_GSL_1_11
+#endif // HAVE_GSL

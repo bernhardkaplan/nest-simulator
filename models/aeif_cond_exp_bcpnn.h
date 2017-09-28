@@ -1,5 +1,5 @@
 /*
- *  aeif_cond_exp_multisynapse.h
+ *  aeif_cond_exp_bcpnn.h
  *
  *  This file is part of NEST.
  *
@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef AEIF_COND_EXP_MULTISYNAPSE_H
-#define AEIF_COND_EXP_MULTISYNAPSE_H
+#ifndef AEIF_COND_EXP_BCPNN_H
+#define AEIF_COND_EXP_BCPNN_H
 
 #include "config.h"
 
@@ -40,13 +40,15 @@
 #include <gsl/gsl_odeiv.h>
 
 /* BeginDocumentation
-Name: aeif_cond_exp_multisynapse - Conductance based exponential integrate-and-fire neuron model according to Brette and Gerstner (2005).
+Name: aeif_cond_exp_bcpnn - Conductance based exponential integrate-and-fire neuron model according to Brette and Gerstner (2005) with an additional bias current.
 
 Description: 
 
-aeif_cond_exp_multisynapse is the adaptive exponential integrate and fire neuron
+aeif_cond_exp_bcpnn is the adaptive exponential integrate and fire neuron
 according to Brette and Gerstner (2005), with post-synaptic
 conductances in the form of truncated exponentials.
+This neuron is supposed to be used with the bcpnn_synapse which controls
+the bias current through the log of the pj trace.
 
 This implementation uses the embedded 4th order Runge-Kutta-Fehlberg
 solver with adaptive stepsize to integrate the differential equation.
@@ -123,17 +125,17 @@ namespace nest
    * @param void* Pointer to model neuron instance.
    */
   extern "C"
-  int aeif_cond_exp_multisynapse_dynamics (double, const double*, double*, void*);
+  int aeif_cond_exp_bcpnn_dynamics (double, const double*, double*, void*);
 
-  class aeif_cond_exp_multisynapse:
+  class aeif_cond_exp_bcpnn:
     public nest::Archiving_Node
   {
     
   public:        
     
-    aeif_cond_exp_multisynapse();
-    aeif_cond_exp_multisynapse(const aeif_cond_exp_multisynapse&);
-    ~aeif_cond_exp_multisynapse();
+    aeif_cond_exp_bcpnn();
+    aeif_cond_exp_bcpnn(const aeif_cond_exp_bcpnn&);
+    ~aeif_cond_exp_bcpnn();
 
     /**
      * Import sets of overloaded virtual functions.
@@ -177,11 +179,11 @@ namespace nest
     // Friends --------------------------------------------------------
 
     // make dynamics function quasi-member
-    friend int nest::aeif_cond_exp_multisynapse_dynamics(double, const double*, double*, void*);
+    friend int nest::aeif_cond_exp_bcpnn_dynamics(double, const double*, double*, void*);
 
     // The next two classes need to be friends to access the State_ class/member
-    friend class nest::RecordablesMap<aeif_cond_exp_multisynapse>;
-    friend class nest::UniversalDataLogger<aeif_cond_exp_multisynapse>;
+    friend class nest::RecordablesMap<aeif_cond_exp_bcpnn>;
+    friend class nest::UniversalDataLogger<aeif_cond_exp_bcpnn>;
 
   private:
     // ---------------------------------------------------------------- 
@@ -290,11 +292,11 @@ namespace nest
      */
     struct Buffers_
     {
-      Buffers_(aeif_cond_exp_multisynapse &);                    //!<Sets buffer pointers to 0
-      Buffers_(const Buffers_ &, aeif_cond_exp_multisynapse &);  //!<Sets buffer pointers to 0
+      Buffers_(aeif_cond_exp_bcpnn &);                    //!<Sets buffer pointers to 0
+      Buffers_(const Buffers_ &, aeif_cond_exp_bcpnn &);  //!<Sets buffer pointers to 0
 
       //! Logger for all analog data
-      nest::UniversalDataLogger<aeif_cond_exp_multisynapse> logger_;
+      nest::UniversalDataLogger<aeif_cond_exp_bcpnn> logger_;
 
       /** buffers and sums up incoming spikes/currents */
       nest::RingBuffer spikes_AMPA_;
@@ -364,11 +366,11 @@ namespace nest
     Buffers_    B_;
 
     //! Mapping of recordables names to access functions
-    static nest::RecordablesMap<aeif_cond_exp_multisynapse> recordablesMap_;
+    static nest::RecordablesMap<aeif_cond_exp_bcpnn> recordablesMap_;
   };
 
 	inline
-	nest::port aeif_cond_exp_multisynapse::send_test_event(Node& target, rport receptor_type, synindex, bool)
+	nest::port aeif_cond_exp_bcpnn::send_test_event(Node& target, rport receptor_type, synindex, bool)
 	{
 	  SpikeEvent e;
 	  e.set_sender(*this);
@@ -376,7 +378,7 @@ namespace nest
 	}
 
   inline
-  nest::port aeif_cond_exp_multisynapse::handles_test_event(nest::SpikeEvent &, nest::rport receptor_type)
+  nest::port aeif_cond_exp_bcpnn::handles_test_event(nest::SpikeEvent &, nest::rport receptor_type)
   {
 	// If receptor type is less than 1 =(MIN_SPIKE_RECEPTOR) or greater or equal to 4
 	// (=SUP_SPIKE_RECEPTOR) then provided receptor type is not a spike receptor.
@@ -402,7 +404,7 @@ namespace nest
   }
 
   inline
-  nest::port aeif_cond_exp_multisynapse::handles_test_event(nest::DataLoggingRequest& dlr, 
+  nest::port aeif_cond_exp_bcpnn::handles_test_event(nest::DataLoggingRequest& dlr, 
 				     nest::rport receptor_type)
   {
 	// If receptor type does not equal 0 then it is not a data logging request
@@ -425,7 +427,7 @@ namespace nest
   }
 
   inline
-  nest::port aeif_cond_exp_multisynapse::handles_test_event(nest::CurrentEvent &, nest::rport receptor_type)
+  nest::port aeif_cond_exp_bcpnn::handles_test_event(nest::CurrentEvent &, nest::rport receptor_type)
   {
 	// If receptor type is less than 4 (MIN_CURR_RECEPTOR) or greater or equal
 	// to 5 (SUP_CURR_RECEPTOR) the provided receptor type is not current
@@ -450,7 +452,7 @@ namespace nest
   }
  
   inline
-  void aeif_cond_exp_multisynapse::get_status(DictionaryDatum &d) const
+  void aeif_cond_exp_bcpnn::get_status(DictionaryDatum &d) const
   {
     P_.get(d);
     S_.get(d);
@@ -460,7 +462,7 @@ namespace nest
   }
 
   inline
-  void aeif_cond_exp_multisynapse::set_status(const DictionaryDatum &d)
+  void aeif_cond_exp_bcpnn::set_status(const DictionaryDatum &d)
   {
     Parameters_ ptmp = P_;  // temporary copy in case of errors
     ptmp.set(d);            // throws if BadProperty
@@ -480,5 +482,5 @@ namespace nest
   
 } // namespace
 
-#endif // HAVE_GSL_1_11
-#endif // AEIF_COND_EXP_MULTISYNAPSE_H
+#endif // HAVE_GSL
+#endif // AEIF_COND_EXP_BCPNN_H
