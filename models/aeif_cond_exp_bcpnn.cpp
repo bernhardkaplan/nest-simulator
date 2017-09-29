@@ -127,6 +127,8 @@ int nest::aeif_cond_exp_bcpnn_dynamics (double, const double y[], double f[], vo
   node.S_.I_NMDA_NEG_ = -y[S::G_NMDA_NEG] * ( V - node.P_.NMDA_NEG_E_rev );
   node.S_.I_AMPA_NEG_ = -y[S::G_AMPA_NEG] * ( V - node.P_.AMPA_NEG_E_rev );
   node.S_.I_GABA_     = -y[S::G_GABA] * ( V - node.P_.GABA_E_rev );
+  // TODO: change line to
+  // const double I_bias = node.P_.gain * std::log(node.S_.P_J);
   const double I_bias = node.P_.gain * std::log(y[S::P_J]);
 
   //const double I_syn =  I_AMPA + I_NMDA + I_NMDA_NEG + I_AMPA_NEG + I_GABA + node.B_.I_stim_ ;
